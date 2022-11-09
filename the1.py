@@ -1,13 +1,12 @@
-import math
-
 import numpy as np
 import cv2 as cv
 import matplotlib.pyplot as plt
-
+import time
 def calculate_perchannel_histogram(im, nbins):
     q = int(256/nbins)
     h = np.zeros(nbins * 3)
     h = np.reshape(h, (3, nbins))
+
     for row in range(im.shape[0]):
         for col in range(im.shape[1]):
             val = im[row, col]
@@ -15,7 +14,10 @@ def calculate_perchannel_histogram(im, nbins):
             h[0][v[0]] += 1     # B
             h[1][v[1]] += 1     # G
             h[2][v[2]] += 1     # R
-    return l1_normalization(h)
+            B = l1_normalization(h[0][v[0]])
+            G = l1_normalization(h[1][v[1]])
+            R = l1_normalization(h[2][v[2]])
+    return (B,G,R)
 
 
 def calculate_3d_histogram(im, nbins):
@@ -46,23 +48,33 @@ def l1_normalization(h):    # For 1D
 def query_compare(support, query, nbins, nameList, thrreD = False):
     correct_retrieve = 0
     total = len(nameList)
-    for sname in support:
-        sIm = cv.imread(sname)
+    for qname in query:
+        qIm = cv.imread(qname)
         minJSD = 99999999 # some large number TODO: look here! maybe flt_max
-        for qname in query:
-            qIm = cv.imread(qname)
+        for sname in support:
+            sIm = cv.imread(sname)
             if thrreD:
-                sHist = calculate_3d_histogram(sIm, nbins)   # 16 bins
+                sHist = calculate_3d_histogram(sIm, nbins)
                 qHist = calculate_3d_histogram(qIm, nbins)
+
+                jsd = calculate_jsd(sHist, qHist, nbins)
+                if jsd < minJSD:
+                    minJSD = jsd
+                    minS = sname
             else:
-                sHist = calculate_perchannel_histogram(sIm, nbins)   # 16 bins
+                sHist = calculate_perchannel_histogram(sIm, nbins)
                 qHist = calculate_perchannel_histogram(qIm, nbins)
 
-            jsd = calculate_jsd(sHist, qHist, nbins)
-            if jsd < minJSD:
-                minJSD = jsd
-                minQ = qname
-        if minQ == sname:
+                jsdB = calculate_jsd(sHist[0], qHist[0], nbins)  # B
+                jsdG = calculate_jsd(sHist[1], qHist[1], nbins)  # G
+                jsdR = calculate_jsd(sHist[2], qHist[2], nbins)  # R
+                jsd = (jsdB + jsdG + jsdR) / 3
+
+                if jsd < minJSD:
+                    minJSD = jsd
+                    minS = sname
+
+        if minS == qname:
             correct_retrieve += 1
     top1_acc = correct_retrieve / total
     return top1_acc
@@ -183,8 +195,11 @@ def main():
     question_5_4_pc = query_compare(support, q_3, 16, nameList, False)
 
 
-# im = cv.imread("dataset/support_96/Green_tailed_Towhee_0015_136678400.jpg")
-# a = calculate_3d_histogram(im,2)
-# b = calculate_perchannel_histogram(im, 2)
-# print("a")
-#main()
+im = cv.imread("dataset/support_96/Green_tailed_Towhee_0015_136678400.jpg")
+a = calculate_3d_histogram(im,2)
+b = calculate_perchannel_histogram(im, 2)
+# # print("a")
+# start = time.time()
+# main()
+# end = time.time()
+# print(end - start)

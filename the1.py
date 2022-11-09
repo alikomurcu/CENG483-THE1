@@ -72,28 +72,65 @@ def query_compare(support, query, query_names, nbins, nameList, thrreD, gridSize
     count_q = 0
     minS = ""
     for qname in query:
-        minJSD = 99999999 # some large number TODO: look here! maybe flt_max
+        minJSD = 99999999999999999 # some large number TODO: look here! maybe flt_max
         count_s = 0
 
+        grid_result_q = []
+        grid_list_q = grid(gridSize, qname)
         if thrreD:
-            qHist = calculate_3d_histogram(qname, nbins, query_names[count_q])
+            if gridSize == 1:
+                qHist = calculate_3d_histogram(qname, nbins, query_names[count_q])
+            else:
+                for i in range(gridSize*gridSize):
+                    qHist = calculate_3d_histogram(grid_list_q[i], nbins, query_names[count_q]  + str(gridSize) + str(i))  # File name + i in order to indicate the grid
+                    grid_result_q.append(qHist)
         else:
-            qHist = calculate_perchannel_histogram(qname, nbins, query_names[count_q])
-        for sname in support:
-            if thrreD:
-                sHist = calculate_3d_histogram(sname, nbins, support_names[count_s])
+            if gridSize == 1:
+                qHist = calculate_perchannel_histogram(qname, nbins, query_names[count_q])
+            else:
+                for i in range(gridSize*gridSize):
+                    qHist = calculate_perchannel_histogram(grid_list_q[i], nbins, query_names[count_q] + str(gridSize) + str(i))
+                    grid_result_q.append(qHist)
 
-                jsd = calculate_jsd(sHist, qHist, nbins)
+        for sname in support:
+            grid_list_s = grid(gridSize, sname)
+            cumulative_jsd = 0
+
+            if thrreD:
+                if gridSize == 1:
+                    sHist = calculate_3d_histogram(sname, nbins, support_names[count_s])
+                    jsd = calculate_jsd(sHist, qHist, nbins)
+
+                else:
+                    for i in range(gridSize * gridSize):
+                        sHist = calculate_3d_histogram(sname, nbins, support_names[count_s] + str(gridSize) + str(i))
+                        jsdB = calculate_jsd(sHist[0], grid_result_q[i][0], nbins)  # B
+                        jsdG = calculate_jsd(sHist[1], grid_result_q[i][1], nbins)  # G
+                        jsdR = calculate_jsd(sHist[2], grid_result_q[i][2], nbins)  # R
+                        jsd = (jsdB + jsdG + jsdR) / 3
+
                 if jsd < minJSD:
                     minJSD = jsd
                     minS = support_names[count_s]
             else:
-                sHist = calculate_perchannel_histogram(sname, nbins, support_names[count_s])
+                if gridSize == 1:
+                    sHist = calculate_perchannel_histogram(sname, nbins, support_names[count_s])
+                    jsdB = calculate_jsd(sHist[0], qHist[0], nbins)  # B
+                    jsdG = calculate_jsd(sHist[1], qHist[1], nbins)  # G
+                    jsdR = calculate_jsd(sHist[2], qHist[2], nbins)  # R
+                    jsd = (jsdB + jsdG + jsdR) / 3
 
-                jsdB = calculate_jsd(sHist[0], qHist[0], nbins)  # B
-                jsdG = calculate_jsd(sHist[1], qHist[1], nbins)  # G
-                jsdR = calculate_jsd(sHist[2], qHist[2], nbins)  # R
-                jsd = (jsdB + jsdG + jsdR) / 3
+                else:
+                    for i in range(gridSize*gridSize):
+                        sHist = calculate_perchannel_histogram(grid_list_s[i], nbins, support_names[count_s] + str(gridSize) + str(i))
+
+                        jsdB = calculate_jsd(sHist[0], grid_result_q[i][0], nbins)  # B
+                        jsdG = calculate_jsd(sHist[1], grid_result_q[i][1], nbins)  # G
+                        jsdR = calculate_jsd(sHist[2], grid_result_q[i][2], nbins)  # R
+                        jsd = (jsdB + jsdG + jsdR) / 3
+
+                        cumulative_jsd += jsd
+                    jsd = cumulative_jsd / (gridSize*gridSize)      # Take average
 
                 if jsd < minJSD:
                     minJSD = jsd
@@ -114,7 +151,7 @@ def grid(n, im):
         for j in range(n):
             x = im[i*n: (i+1)*n, j*n:(j+1)*n]
             grids.append(x)
-    return
+    return grids
 
 def main():
 #    im = cv.imread("dataset/support_96/Acadian_Flycatcher_0016_887710060.jpg")
@@ -159,47 +196,48 @@ def main():
 
     # # Question 1
     #     #Query 1
-    # question_1_16 = query_compare(support, q_1, q_1_names, 16, nameList, True, 0)
-    # question_1_8 = query_compare(support, q_1, q_1_names, 8, nameList, True, 0)
-    # question_1_4 = query_compare(support, q_1, q_1_names, 4, nameList, True, 0)
-    # question_1_2 = query_compare(support, q_1, q_1_names, 2, nameList, True, 0)
+    # question_1_16 = query_compare(support, q_1, q_1_names, 16, nameList, True, 1)
+    # question_1_8 = query_compare(support, q_1, q_1_names, 8, nameList, True, 1)
+    # question_1_4 = query_compare(support, q_1, q_1_names, 4, nameList, True, 1)
+    # question_1_2 = query_compare(support, q_1, q_1_names, 2, nameList, True, 1)
     # print("1_2" , question_1_2)
     #     #Query 2
-    # question_1_16 = query_compare(support, q_2, q_2_names, 16, nameList, True, 0)
-    # question_1_8 = query_compare(support, q_2, q_2_names, 8, nameList, True, 0)
-    # question_1_4 = query_compare(support, q_2, q_2_names, 4, nameList, True, 0)
-    # question_1_2 = query_compare(support, q_2, q_2_names, 2, nameList, True, 0)
+    # question_1_16 = query_compare(support, q_2, q_2_names, 16, nameList, True, 1)
+    # question_1_8 = query_compare(support, q_2, q_2_names, 8, nameList, True, 1)
+    # question_1_4 = query_compare(support, q_2, q_2_names, 4, nameList, True, 1)
+    # question_1_2 = query_compare(support, q_2, q_2_names, 2, nameList, True, 1)
     #     #Query 3
-    # question_1_16 = query_compare(support, q_3, q_3_names, 16, nameList, True, 0)
-    # question_1_8 = query_compare(support, q_3, q_3_names, 8, nameList, True, 0)
-    # question_1_4 = query_compare(support, q_3, q_3_names, 4, nameList, True, 0)
-    # question_1_2 = query_compare(support, q_3, q_3_names, 2, nameList, True, 0)
+    # question_1_16 = query_compare(support, q_3, q_3_names, 16, nameList, True, 1)
+    # question_1_8 = query_compare(support, q_3, q_3_names, 8, nameList, True, 1)
+    # question_1_4 = query_compare(support, q_3, q_3_names, 4, nameList, True, 1)
+    # question_1_2 = query_compare(support, q_3, q_3_names, 2, nameList, True, 1)
     #
     # # Question 2
     #     #Query 1
-    # question_2_16 = query_compare(support, q_1, q_1_names, 16, nameList, False, 0)
-    # question_2_8 = query_compare(support, q_1, q_1_names, 8, nameList, False, 0)
-    # question_2_4 = query_compare(support, q_1, q_1_names, 4, nameList, False, 0)
-    # question_2_2 = query_compare(support, q_1, q_1_names, 2, nameList, False, 0)
-    # question_2_1 = query_compare(support, q_1, q_1_names, 8, nameList, False, 0)
+    # question_2_16 = query_compare(support, q_1, q_1_names, 16, nameList, False, 1)
+    # question_2_8 = query_compare(support, q_1, q_1_names, 8, nameList, False, 1)
+    # question_2_4 = query_compare(support, q_1, q_1_names, 4, nameList, False, 1)
+    # question_2_2 = query_compare(support, q_1, q_1_names, 2, nameList, False, 1)
+    # question_2_1 = query_compare(support, q_1, q_1_names, 8, nameList, False, 1)
     # print("2_1", question_2_1)
     #     #Query 2
-    # question_2_16 = query_compare(support, q_2, q_2_names, 16, nameList, False, 0)
-    # question_2_8 = query_compare(support, q_2, q_2_names, 8, nameList, False, 0)
-    # question_2_4 = query_compare(support, q_2, q_2_names, 4, nameList, False, 0)
-    # question_2_2 = query_compare(support, q_2, q_2_names, 2, nameList, False, 0)
-    # question_2_1 = query_compare(support, q_2, q_2_names, 1, nameList, False, 0)
+    # question_2_16 = query_compare(support, q_2, q_2_names, 16, nameList, False, 1)
+    # question_2_8 = query_compare(support, q_2, q_2_names, 8, nameList, False, 1)
+    # question_2_4 = query_compare(support, q_2, q_2_names, 4, nameList, False, 1)
+    # question_2_2 = query_compare(support, q_2, q_2_names, 2, nameList, False, 1)
+    # question_2_1 = query_compare(support, q_2, q_2_names, 1, nameList, False, 1)
     #     #Query 3
-    # question_2_16 = query_compare(support, q_3, q_3_names, 16, nameList, False, 0)
-    # question_2_8 = query_compare(support, q_3, q_3_names, 8, nameList, False, 0)
-    # question_2_4 = query_compare(support, q_3, q_3_names, 4, nameList, False, 0)
-    # question_2_2 = query_compare(support, q_3, q_3_names, 2, nameList, False, 0)
-    # question_2_1 = query_compare(support, q_3, q_3_names, 1, nameList, False, 0)
+    # question_2_16 = query_compare(support, q_3, q_3_names, 16, nameList, False, 1)
+    # question_2_8 = query_compare(support, q_3, q_3_names, 8, nameList, False, 1)
+    # question_2_4 = query_compare(support, q_3, q_3_names, 4, nameList, False, 1)
+    # question_2_2 = query_compare(support, q_3, q_3_names, 2, nameList, False, 1)
+    # question_2_1 = query_compare(support, q_3, q_3_names, 1, nameList, False, 1)
     #
     # # Question 3
     #     #2x2
     # question_3_1_3D = query_compare(support, q_1, q_1_names, 16, nameList, True, 2)
     question_3_1_pc = query_compare(support, q_1, q_1_names, 16, nameList, False, 2)
+    print("Query 1: " ,question_3_1_pc)
     #     #4x4
     # question_3_2_3D = query_compare(support, q_1, q_1_names, 16, nameList, True, 4)
     # question_3_2_pc = query_compare(support, q_1, q_1_names, 16, nameList, False, 4)

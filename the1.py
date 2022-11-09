@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 import cv2 as cv
 import matplotlib.pyplot as plt
@@ -25,13 +27,13 @@ def calculate_3d_histogram(im, nbins):
             val = im[row, col]
             v = val//q      # int division
             h[v[0], v[1], v[2]] += 1
-    return h
+    return h    # TODO: add l1_normalization here
 
-def calculate_jsd(s, q):
-    return 0
+def calculate_jsd(s, q, n):
+    return 0.5 * (calculate_kl(q, (s+q)/2) + calculate_kl(s, (s+q)/2))
 
 def calculate_kl(s, q):
-    return
+    return q.dot(np.log(q/s))
 
 def l1_normalization(h):    # For 1D
     n = np.linalg.norm(h, 1)
@@ -41,6 +43,29 @@ def l1_normalization(h):    # For 1D
 
     return res
 
+def query_compare(support, query, nbins, nameList, thrreD = False):
+    correct_retrieve = 0
+    total = len(nameList)
+    for sname in support:
+        sIm = cv.imread(sname)
+        minJSD = 99999999 # some large number TODO: look here! maybe flt_max
+        for qname in query:
+            qIm = cv.imread(qname)
+            if thrreD:
+                sHist = calculate_3d_histogram(sIm, nbins)   # 16 bins
+                qHist = calculate_3d_histogram(qIm, nbins)
+            else:
+                sHist = calculate_perchannel_histogram(sIm, nbins)   # 16 bins
+                qHist = calculate_perchannel_histogram(qIm, nbins)
+
+            jsd = calculate_jsd(sHist, qHist, nbins)
+            if jsd < minJSD:
+                minJSD = jsd
+                minQ = qname
+        if minQ == sname:
+            correct_retrieve += 1
+    top1_acc = correct_retrieve / total
+    return top1_acc
 
 def main():
 #    im = cv.imread("dataset/support_96/Acadian_Flycatcher_0016_887710060.jpg")
@@ -53,7 +78,6 @@ def main():
     # Support
     for name in nameList:
         name = "dataset/support_96/" + name
-        f = open(name, "r")
         im = cv.imread(name)
         support.append(im)
 
@@ -61,7 +85,6 @@ def main():
     # Query 1
     for name in nameList:
         name = "dataset/query_1/" + name
-        f = open(name, "r")
         im = cv.imread(name)
         q_1.append(im)
 
@@ -69,7 +92,6 @@ def main():
     # Query 2
     for name in nameList:
         name = "dataset/query_2/" + name
-        f = open(name, "r")
         im = cv.imread(name)
         q_2.append(im)
 
@@ -82,17 +104,85 @@ def main():
         q_3.append(im)
 
     # Question 1
-    min_qList = []
-    for s in support:
-        minJSD = 99999999 # some large number TODO: look here! maybe flt_max
-        for q in q_1:
-            sHist = calculate_perchannel_histogram(s, 16)   # 16 bins
-            qHist = calculate_perchannel_histogram(q, 16)
-            jsd = calculate_jsd(sHist, qHist)
-            if jsd < minJSD:
-                minJSD = jsd
-                minQ = q
-        min_qList.append(minQ)
+        #Query 1
+    question_1_16 = query_compare(support, q_1, 16, nameList, True)
+    question_1_8 = query_compare(support, q_1, 8, nameList, True)
+    question_1_4 = query_compare(support, q_1, 4, nameList, True)
+    question_1_2 = query_compare(support, q_1, 2, nameList, True)
+        #Query 2
+    question_1_16 = query_compare(support, q_2, 16, nameList, True)
+    question_1_8 = query_compare(support, q_2, 8, nameList, True)
+    question_1_4 = query_compare(support, q_2, 4, nameList, True)
+    question_1_2 = query_compare(support, q_2, 2, nameList, True)
+        #Query 3
+    question_1_16 = query_compare(support, q_3, 16, nameList, True)
+    question_1_8 = query_compare(support, q_3, 8, nameList, True)
+    question_1_4 = query_compare(support, q_3, 4, nameList, True)
+    question_1_2 = query_compare(support, q_3, 2, nameList, True)
+
+    # Question 2
+        #Query 1
+    question_2_16 = query_compare(support, q_1, 16, nameList, False)
+    question_2_8 = query_compare(support, q_1, 8, nameList, False)
+    question_2_4 = query_compare(support, q_1, 4, nameList, False)
+    question_2_2 = query_compare(support, q_1, 2, nameList, False)
+    question_2_1 = query_compare(support, q_1, 2, nameList, False)
+        #Query 2
+    question_2_16 = query_compare(support, q_2, 16, nameList, False)
+    question_2_8 = query_compare(support, q_2, 8, nameList, False)
+    question_2_4 = query_compare(support, q_2, 4, nameList, False)
+    question_2_2 = query_compare(support, q_2, 2, nameList, False)
+    question_2_1 = query_compare(support, q_2, 2, nameList, False)
+        #Query 3
+    question_2_16 = query_compare(support, q_3, 16, nameList, False)
+    question_2_8 = query_compare(support, q_3, 8, nameList, False)
+    question_2_4 = query_compare(support, q_3, 4, nameList, False)
+    question_2_2 = query_compare(support, q_3, 2, nameList, False)
+    question_2_1 = query_compare(support, q_3, 2, nameList, False)
+
+    # Question 3
+        #2x2
+    question_3_1_3D = query_compare(support, q_1, 16, nameList, True)
+    question_3_1_pc = query_compare(support, q_1, 16, nameList, False)
+        #4x4
+    question_3_2_3D = query_compare(support, q_1, 16, nameList, True)
+    question_3_2_pc = query_compare(support, q_1, 16, nameList, False)
+        #6x6
+    question_3_3_3D = query_compare(support, q_1, 16, nameList, True)
+    question_3_3_pc = query_compare(support, q_1, 16, nameList, False)
+        #8x8
+    question_3_4_3D = query_compare(support, q_1, 16, nameList, True)
+    question_3_4_pc = query_compare(support, q_1, 16, nameList, False)
+
+    # Question 4
+        #2x2
+    question_4_1_3D = query_compare(support, q_2, 16, nameList, True)
+    question_4_1_pc = query_compare(support, q_2, 16, nameList, False)
+        #4x4
+    question_4_2_3D = query_compare(support, q_2, 16, nameList, True)
+    question_4_2_pc = query_compare(support, q_2, 16, nameList, False)
+        #6x6
+    question_4_3_3D = query_compare(support, q_2, 16, nameList, True)
+    question_4_3_pc = query_compare(support, q_2, 16, nameList, False)
+        #8x8
+    question_4_4_3D = query_compare(support, q_2, 16, nameList, True)
+    question_4_4_pc = query_compare(support, q_2, 16, nameList, False)
+
+    # Question 5
+        #2x2
+    question_5_1_3D = query_compare(support, q_3, 16, nameList, True)
+    question_5_1_pc = query_compare(support, q_3, 16, nameList, False)
+        #4x4
+    question_5_2_3D = query_compare(support, q_3, 16, nameList, True)
+    question_5_2_pc = query_compare(support, q_3, 16, nameList, False)
+        #6x6
+    question_5_3_3D = query_compare(support, q_3, 16, nameList, True)
+    question_5_3_pc = query_compare(support, q_3, 16, nameList, False)
+        #8x8
+    question_5_4_3D = query_compare(support, q_3, 16, nameList, True)
+    question_5_4_pc = query_compare(support, q_3, 16, nameList, False)
+
+
 # im = cv.imread("dataset/support_96/Green_tailed_Towhee_0015_136678400.jpg")
 # a = calculate_3d_histogram(im,2)
 # b = calculate_perchannel_histogram(im, 2)

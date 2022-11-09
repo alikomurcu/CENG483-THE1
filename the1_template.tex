@@ -1,0 +1,207 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[dvips]{graphicx}
+\usepackage{epsfig}
+\usepackage{fancybox}
+\usepackage{verbatim}
+\usepackage{array}
+\usepackage{latexsym}
+\usepackage{alltt}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[hmargin=3cm,vmargin=5.0cm]{geometry}
+\usepackage{epstopdf}
+\topmargin=-1.8cm
+\addtolength{\textheight}{6.5cm}
+\addtolength{\textwidth}{2.0cm}
+\setlength{\oddsidemargin}{0.0cm}
+\setlength{\evensidemargin}{0.0cm}
+\newcommand{\HRule}{\rule{\linewidth}{1mm}}
+\newcommand{\kutu}[2]{\framebox[#1mm]{\rule[-2mm]{0mm}{#2mm}}}
+\newcommand{\gap}{ \\[1mm] }
+\newcommand{\Q}{\raisebox{1.7pt}{$\scriptstyle\bigcirc$}}
+\newcommand{\minus}{\scalebox{0.35}[1.0]{$-$}}
+
+
+
+\lstset{
+    %backgroundcolor=\color{lbcolor},
+    tabsize=2,
+    language=MATLAB,
+    basicstyle=\footnotesize,
+    numberstyle=\footnotesize,
+    aboveskip={0.0\baselineskip},
+    belowskip={0.0\baselineskip},
+    columns=fixed,
+    showstringspaces=false,
+    breaklines=true,
+    prebreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+    %frame=single,
+    showtabs=false,
+    showspaces=false,
+    showstringspaces=false,
+    identifierstyle=\ttfamily,
+    keywordstyle=\color[rgb]{0,0,1},
+    commentstyle=\color[rgb]{0.133,0.545,0.133},
+    stringstyle=\color[rgb]{0.627,0.126,0.941},
+}
+
+
+\begin{document}
+
+\noindent
+\HRule %\\[3mm]
+\small
+\begin{center}
+	\LARGE \textbf{CENG 483} \\[4mm]
+	\Large Introduction to Computer Vision \\[4mm]
+	\normalsize Fall 2022-2023 \\
+	\Large Take Home Exam 1 \\
+	\Large Instance Recognition with Color Histograms \\
+    \Large Student ID: \\
+\end{center}
+\HRule
+
+\begin{center}
+\end{center}
+\vspace{-10mm}
+\noindent\\ \\ 
+Please fill in the sections below only with the requested information. If you have additional things you want to mention, you can use the last section. For all of the configurations make sure that your 
+quantization interval is divisible by 256 in order to obtain equal bins.
+\section{3D Color Histogram}
+In this section, give your results without dividing the images into grids. Your histogram must have at most 4096 bins. E.g. Assume that you choose 16 for quantization interval then you will have 16 bins for each channel and 4096 bins for your 3D color histogram.
+
+\begin{itemize}
+\item Pick 4 different quantization intervals and give your top-1 accuracy results for each of them on every query dataset.
+\item Explain the differences in results and possible causes of them if there are any.
+\end{itemize}
+
+\section{Per Channel Color histogram}
+In this section, give your results without dividing the images into grids.
+
+\begin{itemize}
+\item Pick 5 different quantization intervals and give your top-1 accuracy results for each of them on every query dataset.
+\item Explain the differences in results and possible causes of them if there are any.
+\end{itemize}
+
+\newpage
+\textbf{Before starting the next section, please pick up the best configuration for two properties above and continue with them.}
+
+\section{Grid Based Feature Extraction - Query set 1}
+Give your top-1 accuracy for all of the configurations below.
+
+%\subsection{Spatial grid with cells of size $48\times48$ pixels}
+\subsection{$2 \times 2$ spatial grid}
+\begin{itemize}
+\item 3d color histogram:
+\item per-channel histogram:
+\end{itemize}
+
+\subsection{$4 \times 4$ spatial grid}
+\begin{itemize}
+\item 3d color histogram:
+\item per-channel histogram:
+\end{itemize}
+
+\subsection{$6 \times 6$ spatial grid}
+\begin{itemize}
+\item 3d color histogram:
+\item per-channel histogram:
+\end{itemize}
+
+\subsection{$8 \times 8$ spatial grid}
+\begin{itemize}
+\item 3d color histogram:
+\item per-channel histogram:
+\end{itemize}
+
+\subsection{Questions}
+\begin{itemize}
+\item What do you think about the cause of the difference between the results?
+\item Explain the advantages/disadvantages of using grids in both types of histograms if there are any.
+\end{itemize}
+
+\section{Grid Based Feature Extraction - Query set 2}
+Give your top-1 accuracy for all of the configurations below.
+
+%\subsection{Spatial grid with cells of size $48\times48$ pixels}
+\subsection{$2 \times 2$ spatial grid}
+\begin{itemize}
+\item 3d color histogram:
+\item per-channel histogram:
+\end{itemize}
+
+\subsection{$4 \times 4$ spatial grid}
+\begin{itemize}
+\item 3d color histogram:
+\item per-channel histogram:
+\end{itemize}
+
+\subsection{$6 \times 6$ spatial grid}
+\begin{itemize}
+\item 3d color histogram:
+\item per-channel histogram:
+\end{itemize}
+
+\subsection{$8 \times 8$ spatial grid}
+\begin{itemize}
+\item 3d color histogram:
+\item per-channel histogram:
+\end{itemize}
+
+\subsection{Questions}
+\begin{itemize}
+\item What do you think about the cause of the difference between the results?
+\item Explain the advantages/disadvantages of using grids in both types of histograms if there are any.
+\end{itemize}
+
+
+\section{Grid Based Feature Extraction - Query set 3}
+Give your top-1 accuracy for all of the configurations below.
+
+\subsection{$2 \times 2$ spatial grid}
+\begin{itemize}
+\item 3d color histogram:
+\item per-channel histogram:
+\end{itemize}
+
+\subsection{$4 \times 4$ spatial grid}
+\begin{itemize}
+\item 3d color histogram:
+\item per-channel histogram:
+\end{itemize}
+
+\subsection{$6 \times 6$ spatial grid}
+\begin{itemize}
+\item 3d color histogram:
+\item per-channel histogram:
+\end{itemize}
+
+\subsection{$8 \times 8$ spatial grid}
+\begin{itemize}
+\item 3d color histogram:
+\item per-channel histogram:
+\end{itemize}
+
+\subsection{Questions}
+\begin{itemize}
+\item What do you think about the cause of the difference between the results?
+\item Explain the advantages/disadvantages of using grids in both types of histograms if there are any.
+\end{itemize}
+
+
+\section{Additional Comments and References}
+
+(if there any)
+
+
+
+
+
+\end{document}
+

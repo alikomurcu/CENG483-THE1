@@ -1,0 +1,74 @@
+Question2 - PC histograms 
+Question 1
+ 3D Top-1 Acc of Query 1 with 16 bins 1.0
+ 3D Top-1 Acc of Query 1 with 8 bins 1.0
+ 3D Top-1 Acc of Query 1 with 4 bins 1.0
+ 3D Top-1 Acc of Query 1 with 2 bins 0.96
+
+ 3D Top-1 Acc of Query 2 with 16 bins 1.0
+ 3D Top-1 Acc of Query 2 with 8 bins 1.0
+ 3D Top-1 Acc of Query 2 with 4 bins 1.0
+ 3D Top-1 Acc of Query 2 with 2 bins 1.0
+
+ 3D Top-1 Acc of Query 3 with 16 bins 0.11
+ 3D Top-1 Acc of Query 3 with 8 bins 0.105
+ 3D Top-1 Acc of Query 3 with 4 bins 0.115
+ 3D Top-1 Acc of Query 3 with 2 bins 0.075
+Question 2
+ PC Top-1 Acc of Query 1 with 32 bins 0.945
+ PC Top-1 Acc of Query 1 with 16 bins 0.95
+ PC Top-1 Acc of Query 1 with 8 bins 0.965
+ PC Top-1 Acc of Query 1 with 4 bins 0.92
+ PC Top-1 Acc of Query 1 with 2 bins 0.59
+
+ PC Top-1 Acc of Query 2 with 32 bins 1.0
+ PC Top-1 Acc of Query 2 with 16 bins 1.0
+ PC Top-1 Acc of Query 2 with 8 bins 1.0
+ PC Top-1 Acc of Query 2 with 4 bins 1.0
+ PC Top-1 Acc of Query 2 with 2 bins 1.0
+
+ PC Top-1 Acc of Query 3 with 32 bins 0.135
+ PC Top-1 Acc of Query 3 with 16 bins 0.13
+ PC Top-1 Acc of Query 3 with 8 bins 0.145
+ PC Top-1 Acc of Query 3 with 4 bins 0.145
+ PC Top-1 Acc of Query 3 with 2 bins 0.04
+Question2 - PC histograms 
+
+Question 3
+Top-1 3D Acc of Query 1 with x bins with grid 2 : 0.945
+Top-1 PC Acc of Query 1 with x bins with grid 2 : 0.98
+
+Top-1 3D Acc of Query 1 with x bins with grid 4 : 0.78
+Top-1 PC Acc of Query 1 with x bins with grid 4 : 1.0
+
+Top-1 3D Acc of Query 1 with x bins with grid 6 : 0.69
+Top-1 PC Acc of Query 1 with x bins with grid 6 : 1.0
+
+Top-1 3D Acc of Query 1 with x bins with grid 8 : 0.655
+Top-1 PC Acc of Query 1 with x bins with grid 8 : 1.0
+
+Question 4
+Top-1 3D Acc of Query 2 with x bins with grid 2 : 0.985
+Top-1 PC Acc of Query 2 with x bins with grid 2 : 0.42
+
+Top-1 3D Acc of Query 2 with x bins with grid 4 : 0.92
+Top-1 PC Acc of Query 2 with x bins with grid 4 : 0.345
+
+Top-1 3D Acc of Query 2 with x bins with grid 6 : 0.835
+Top-1 PC Acc of Query 2 with x bins with grid 6 : 0.295
+
+Top-1 3D Acc of Query 2 with x bins with grid 8 : 0.785
+Top-1 PC Acc of Query 2 with x bins with grid 8 : 0.245
+
+Question 5
+Top-1 3D Acc of Query 3 with x bins with grid 2 : 0.12
+Top-1 PC Acc of Query 3 with x bins with grid 2 : 0.255
+
+Top-1 3D Acc of Query 3 with x bins with grid 4 : 0.09
+Top-1 PC Acc of Query 3 with x bins with grid 4 : 0.35
+
+Top-1 3D Acc of Query 3 with x bins with grid 6 : 0.08
+Top-1 PC Acc of Query 3 with x bins with grid 6 : 0.39
+
+Top-1 3D Acc of Query 3 with x bins with grid 8 : 0.075
+Top-1 PC Acc of Query 3 with x bins with grid 8 : 0.435
